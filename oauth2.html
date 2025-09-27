@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Generator Token OAuth2 — Google Drive</title>
+
+    <!-- Bootstrap 5.3 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Vue 2 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <link rel="stylesheet" href="assets/oauth2/css/style.css" />
+    <style>
+      body {
+        background-color: #f5f7fb;
+      }
+      .token-box {
+        word-break: break-all;
+        max-height: 220px;
+        overflow: auto;
+        background: #fff;
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid #e6e9ef;
+      }
+      .small-note {
+        font-size: 0.85rem;
+        color: #51545a;
+      }
+      .google-logo {
+        width: 64px;
+        height: 64px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app" class="container py-5">
+      <div class="row g-4">
+        <!-- Kiri -->
+        <div class="col-lg-4 order-lg-2">
+          <div class="card shadow-sm mb-2 text-center">
+            <div class="card-body">
+              <img
+                src="https://www.gstatic.com/images/branding/product/1x/drive_2020q4_48dp.png"
+                class="google-logo mb-2"
+                alt="Google Drive"
+              />
+              <h6>Generator Token Google Drive</h6>
+              <p class="text-muted small">
+                Alat ini membantu membuat <strong>Access Token</strong> &
+                <strong>Refresh Token</strong> untuk layanan
+                <strong>Google API</strong> secara cepat. Client ID dan Client
+                Secret hanya disimpan sementara di
+                <code>sessionStorage</code> selama sesi browser dan tidak pernah
+                disimpan permanen.
+              </p>
+              <p class="text-muted small">
+                Untuk penggunaan produksi, lakukan pertukaran token hanya
+                melalui pihak yang aman dan benar-benar Anda percaya.
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Kanan -->
+        <div class="col-lg-8">
+          <div class="card shadow-sm mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Generator Token OAuth2 Google</h5>
+              <div class="alert alert-info mb-3">
+                <h6>Cara Kerja</h6>
+                <ol class="small">
+                  <li>Isi Client ID & Client Secret.</li>
+                  <li>Klik <em>Buat</em> → login & setujui akses di Google.</li>
+                  <li>
+                    Setelah disetujui, Anda akan diarahkan kembali ke halaman
+                    ini dan token otomatis dibuat.
+                  </li>
+                </ol>
+                <a href="#tutorial" class="btn btn-outline-primary btn-sm">
+                  Tutorial Membuat Client ID & Client Secret
+                </a>
+              </div>
+              <p style="color: red; font-weight: bold">
+                ⚠️ Token bersifat sangat sensitif. Jangan pernah membagikan
+                kepada pihak ketiga yang tidak Anda percayai. Jika memang harus
+                dibagikan, pastikan hanya kepada pihak yang terpercaya.
+                <span class="text-bg-danger"
+                  >Demi keamanan, gunakan akun Google baru khusus</span
+                >
+                untuk integrasi agar terhindar dari risiko kebocoran data di
+                akun utama Anda.
+              </p>
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="clientId" class="form-label">Client ID</label>
+                  <input
+                    id="clientId"
+                    type="text"
+                    v-model="clientId"
+                    class="form-control"
+                  />
+                </div>
+
+                <div class="col-md-6">
+                  <label for="clientSecret" class="form-label"
+                    >Client Secret</label
+                  >
+                  <input
+                    id="clientSecret"
+                    type="text"
+                    v-model="clientSecret"
+                    class="form-control"
+                  />
+                </div>
+
+                <div class="col-12">
+                  <label for="scopes" class="form-label"
+                    >Scopes (pisahkan dengan spasi)</label
+                  >
+                  <input
+                    id="scopes"
+                    type="text"
+                    v-model="scopes"
+                    class="form-control"
+                  />
+                  <div class="small-note mt-1">
+                    Default:
+                    <code>https://www.googleapis.com/auth/drive</code>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <button
+                    class="btn btn-primary"
+                    @click="generate"
+                    :disabled="loading"
+                  >
+                    <i class="bi bi-box-arrow-up-right"></i> Buat & Login Google
+                  </button>
+                  <button class="btn btn-secondary ms-2" @click="clearSession">
+                    Hapus Sesi
+                  </button>
+                </div>
+
+                <div class="col-12 mt-3">
+                  <p class="small-note">
+                    Status: <strong>{{statusMessage}}</strong>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hasil Token -->
+          <div v-if="tokenData" class="card shadow-sm mb-3">
+            <div class="card-body">
+              <h6 class="card-title">Hasil Token</h6>
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Access Token</label>
+                  <div class="token-box">{{ tokenData.access_token }}</div>
+                  <button
+                    class="btn btn-sm btn-outline-primary mt-1"
+                    @click="copy(tokenData.access_token)"
+                  >
+                    Salin
+                  </button>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Refresh Token</label>
+                  <div class="token-box">
+                    {{ tokenData.refresh_token || '(tidak ada refresh token)' }}
+                  </div>
+                  <button
+                    class="btn btn-sm btn-outline-primary mt-1"
+                    @click="copy(tokenData.refresh_token)"
+                  >
+                    Salin
+                  </button>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">Token Berlaku Hingga</label>
+                  <div class="token-box">{{ expiresAtStr }}</div>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">Scope</label>
+                  <div class="token-box">{{ tokenData.scope }}</div>
+                </div>
+
+                <div class="col-12">
+                  <button class="btn btn-success" @click="downloadJson">
+                    Unduh JSON
+                  </button>
+                  <button class="btn btn-danger ms-2" @click="clearTokens">
+                    Hapus Token
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <section id="tutorial">
+            <div class="card shadow-sm mb-3">
+              <div class="card-body">
+                <h5 class="card-title">
+                  📖 Tutorial Membuat OAuth2 Client untuk Google Drive
+                </h5>
+                <p class="small-note">
+                  Ikuti langkah-langkah berikut agar bisa mendapatkan
+                  <strong>Client ID</strong> dan
+                  <strong>Client Secret</strong> dari Google Console:
+                </p>
+
+                <ol class="mt-3">
+                  <li>
+                    <strong>Login dengan Akun Google</strong>
+                    Masuk ke akun Google yang ingin digunakan untuk mengakses
+                    Google Cloud Console.
+                  </li>
+                  <li>
+                    <strong>Buka Google Cloud Console</strong>
+                    Akses:
+                    <a href="https://console.cloud.google.com/" target="_blank"
+                      >https://console.cloud.google.com/</a
+                    >
+                  </li>
+                  <li>
+                    <strong>Buat Project Baru</strong>
+                    Klik menu <em>"Select a Project"</em> →
+                    <em>"New Project"</em>. Beri nama project (misalnya:
+                    <em>Drive Token Generator</em>), lalu klik <em>Create</em>.
+                  </li>
+                  <li>
+                    <strong>Pilih Project</strong>
+                    Pastikan project baru yang dibuat sudah aktif di bagian atas
+                    halaman.
+                  </li>
+                  <li>
+                    <strong>Lengkapi Project Information (jika diminta)</strong>
+                    Jika muncul form <em>Project Information</em>, isi sesuai
+                    kebutuhan, lalu simpan.
+                  </li>
+                  <li>
+                    <strong>Aktifkan Google Drive API</strong>
+                    Masuk ke menu <em>"API & Services" → "Library"</em>. Cari
+                    <em>Google Drive API</em>, lalu klik <em>Enable</em>.
+                  </li>
+                  <li>
+                    <strong>Konfigurasi OAuth Consent Screen</strong>
+                    - Buka menu
+                    <em>"API & Services" → "OAuth consent screen"</em> - Pilih
+                    <em>External</em> agar bisa dipakai semua akun Google - Isi
+                    nama aplikasi (misalnya: <em>Drive Token Generator</em>),
+                    email support, dan domain (jika ada) - Tambahkan scope
+                    <code>https://www.googleapis.com/auth/drive</code> - Simpan
+                    dan <em>Publish</em> consent screen
+                  </li>
+                  <li>
+                    <strong>Buat Credential OAuth Client ID</strong>
+                    - Buka menu <em>"API & Services" → "Credentials"</em> - Klik
+                    <em>"Create Credentials" → "OAuth Client ID"</em> - Pilih
+                    <em>Web Application</em> - Masukkan nama (contoh:
+                    <em>Web OAuth2 Client</em>) - Pada
+                    <em>Authorized redirect URIs</em>, tambahkan:
+                    <code>https://fill-x.web.app/oauth2.html</code>
+                  </li>
+                  <li>
+                    <strong>Simpan & Catat Credential</strong>
+                    Setelah dibuat, Google akan menampilkan
+                    <em>Client ID</em> dan <em>Client Secret</em>. Unduh file
+                    JSON untuk backup dan simpan dengan aman.
+                  </li>
+                  <li>
+                    <strong>Selesai!</strong>
+                    Sekarang Anda sudah siap menggunakan <em>Client ID</em> dan
+                    <em>Client Secret</em> untuk menghasilkan Access Token dan
+                    Refresh Token.
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/oauth2/js/app.js"></script>
+  </body>
+</html>
