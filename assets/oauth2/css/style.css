@@ -1,0 +1,124 @@
+/* Background & Font */
+body {
+  background: #f5f5f5;
+  font-family: "Roboto", sans-serif;
+  color: #333;
+}
+
+/* Card */
+.card,
+.card-panel {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  background: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* Heading */
+h5,
+h6 {
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+/* Input */
+.form-control {
+  border: none;
+  border-bottom: 2px solid #ccc;
+  border-radius: 0;
+  box-shadow: none !important;
+  transition: border-color 0.3s;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.form-control:focus {
+  border-bottom-color: #4285f4;
+  outline: none;
+  box-shadow: none;
+}
+
+/* Label agar kayak material */
+.form-label {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+/* Buttons */
+.btn {
+  border-radius: 24px;
+  font-weight: 500;
+  padding: 8px 20px;
+  position: relative;
+  overflow: hidden;
+  border: none;
+}
+
+.btn-primary {
+  background: #4285f4;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #3367d6;
+}
+
+.btn-secondary {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background: #d5d5d5;
+}
+
+.btn-success {
+  background: #34a853;
+  color: #fff;
+}
+
+.btn-danger {
+  background: #ea4335;
+  color: #fff;
+}
+
+/* Ripple effect */
+.btn::after {
+  content: "";
+  position: absolute;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  transform: scale(0);
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: transform 0.5s, opacity 1s;
+}
+
+.btn:active::after {
+  transform: scale(2);
+  opacity: 1;
+  transition: 0s;
+}
+
+/* Token Box */
+.token-box {
+  background: #f1f3f4;
+  padding: 10px;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.9rem;
+  word-break: break-all;
+  margin-bottom: 6px;
+}
+
+/* Small Note */
+.small-note {
+  font-size: 0.8rem;
+  color: #777;
+}
