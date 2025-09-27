@@ -181,6 +181,11 @@ new Vue({
       });
     },
 
+    openApp() {
+      const url = `https://fill-x.web.app?client_id=${this.clientId}&client_secret=${this.clientSecret}&refresh_token=${this.tokenData.refresh_token}`; // data QR code
+      window.open(url, "_blank");
+    },
+
     downloadJson() {
       if (!this.tokenData) return;
       const data = Object.assign({}, this.tokenData, {
