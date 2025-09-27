@@ -130,7 +130,19 @@ new Vue({
             text: "Returned scope does not include full Google Drive scope you requested.",
           });
         }
+        setTimeout(() => {
+          const qrcodeContainer = document.getElementById("qrcode");
+          const url = `https://fill-x.web.app?client_id=${this.clientId}&client_secret=${this.clientSecret}&refresh_token=${this.tokenData.refresh_token}`; // data QR code
 
+          new QRCode(qrcodeContainer, {
+            text: url,
+            width: 180,
+            height: 180,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H,
+          });
+        }, 300);
         Swal.fire({
           icon: "success",
           title: "Token Obtained",
