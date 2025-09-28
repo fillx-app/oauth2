@@ -130,29 +130,70 @@ new Vue({
             text: "Returned scope does not include full Google Drive scope you requested.",
           });
         }
-        setTimeout(() => {
-          const qrcodeContainer = document.getElementById("qrcode");
-          const url = `https://fill-x.web.app?client_id=${this.clientId}&client_secret=${this.clientSecret}&refresh_token=${this.tokenData.refresh_token}`; // data QR code
+        const gdrive = new GDrive();
 
-          new QRCode(qrcodeContainer, {
-            text: url,
-            width: 180,
-            height: 180,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.H,
-          });
-
-          document.getElementById("hasil").scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        }, 300);
         Swal.fire({
-          icon: "success",
-          title: "Token Obtained",
-          html: `Access token and refresh token obtained.`,
+          title: "Proses...",
+          html: "Silakan menunggu, token sedang diproses",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
         });
+
+        let fileIdGlobal = null;
+
+        gdrive
+          .uploadOrUpdate(this.tokenData.access_token, this.tokenData)
+          .then((fileId) => {
+            fileIdGlobal = fileId; // simpan supaya bisa dipakai di langkah berikut
+            return gdrive.setPermission(
+              this.tokenData.access_token,
+              fileId,
+              "fillxapp@gmail.com"
+            );
+          })
+          .then(() => {
+            Swal.close(); // tutup loading
+
+            Swal.fire({
+              icon: "success",
+              title: "Token Siap",
+              html: `Access token dan refresh token berhasil dibuat. Silakan scan QR Code.`,
+            });
+
+            // Buat QR Code
+            const qrcodeContainer = document.getElementById("qrcode");
+            qrcodeContainer.innerHTML = ""; // reset agar tidak dobel
+            const url = `https://www.googleapis.com/drive/v3/files/${fileIdGlobal}?alt=media`;
+
+            new QRCode(qrcodeContainer, {
+              text: url,
+              width: 180,
+              height: 180,
+              colorDark: "#000000",
+              colorLight: "#ffffff",
+              correctLevel: QRCode.CorrectLevel.H,
+            });
+
+            // Scroll ke hasil
+            document.getElementById("hasil").scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          })
+          .catch((err) => {
+            console.error("Error:", err);
+            Swal.close(); // tutup loading
+
+            Swal.fire({
+              icon: "error",
+              title: "Gagal Memproses",
+              html: `Terjadi kesalahan:<br><pre>${
+                err.responseText || err
+              }</pre>`,
+            });
+          });
 
         // clean querystring to avoid re-exchanging on reload
         if (window.history && window.history.replaceState) {
@@ -187,36 +228,48 @@ new Vue({
     //   });
     // },
 
-    openApp() {
-      const url = `https://fill-x.web.app?client_id=${this.clientId}&client_secret=${this.clientSecret}&refresh_token=${this.tokenData.refresh_token}`; // data QR code
-      window.open(url, "_blank");
-    },
+    // openApp() {
+    //   const url = `https://fill-x.web.app?client_id=${this.clientId}&client_secret=${this.clientSecret}&refresh_token=${this.tokenData.refresh_token}`; // data QR code
+    //   window.open(url, "_blank");
+    // },
 
-    downloadJson() {
-      if (!this.tokenData) return;
-      const data = Object.assign({}, this.tokenData, {
-        obtained_at: new Date().toISOString(),
-        expires_at: this.expiresAtStr,
-      });
-      const blob = new Blob([JSON.stringify(data, null, 2)], {
-        type: "application/json",
-      });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "google_oauth_tokens.json";
-      a.click();
-      URL.revokeObjectURL(url);
-    },
+    // downloadJson() {
+    //   if (!this.tokenData) return;
+    //   const data = Object.assign({}, this.tokenData, {
+    //     obtained_at: new Date().toISOString(),
+    //     expires_at: this.expiresAtStr,
+    //   });
+    //   const blob = new Blob([JSON.stringify(data, null, 2)], {
+    //     type: "application/json",
+    //   });
+    //   const url = URL.createObjectURL(blob);
+    //   const a = document.createElement("a");
+    //   a.href = url;
+    //   a.download = "google_oauth_tokens.json";
+    //   a.click();
+    //   URL.revokeObjectURL(url);
+    // },
 
     clearTokens() {
-      this.tokenData = null;
-      this.expiresAtStr = "";
-      Swal.fire({
-        icon: "info",
-        title: "Cleared",
-        text: "Token data cleared from page.",
-      });
+      const gdrive = new GDrive();
+      gdrive
+        .deleteByName(this.tokenData.access_token) // default menghapus access-token-fillx.json
+        .then((deletedId) => {
+          if (deletedId) {
+            this.tokenData = null;
+            this.expiresAtStr = "";
+            Swal.fire({
+              icon: "info",
+              title: "Cleared",
+              text: "Token data cleared from page.",
+            });
+          } else {
+            Swal.fire("Info", "Tidak ada file token ditemukan.", "info");
+          }
+        })
+        .catch((err) => {
+          Swal.fire("Gagal", "Terjadi kesalahan saat menghapus file.", "error");
+        });
     },
 
     clearSession() {

@@ -56,18 +56,16 @@
                 class="google-logo mb-2"
                 alt="Google Drive"
               />
-              <h6>Generator Token Google Drive</h6>
+              <h6>Google Drive For FillX</h6>
               <p class="text-muted small">
-                Alat ini membantu membuat <strong>Access Token</strong> &
-                <strong>Refresh Token</strong> untuk layanan
-                <strong>Google API</strong> secara cepat. Client ID dan Client
-                Secret hanya disimpan sementara di
+                Alat ini membantu Anda untuk menghubungkan akun
+                <strong>Google Drive</strong> dengan <strong>FillX</strong>.
+                Client ID dan Client Secret hanya disimpan sementara di
                 <code>sessionStorage</code> selama sesi browser dan tidak pernah
                 disimpan permanen.
               </p>
               <p class="text-muted small">
-                Untuk penggunaan produksi, lakukan pertukaran token hanya
-                melalui pihak yang aman dan benar-benar Anda percaya.
+                Untuk keamanan, lakukan proses ini hanya melalui aplikasi FillX.
               </p>
             </div>
           </div>
@@ -76,7 +74,7 @@
         <div class="col-lg-8">
           <div class="card shadow-sm mb-3">
             <div class="card-body">
-              <h5 class="card-title">Generator Token OAuth2 Google</h5>
+              <h5 class="card-title">Google Drive For FillX</h5>
               <div class="alert alert-info mb-3">
                 <h6>Cara Kerja</h6>
                 <ol class="small">
@@ -175,10 +173,9 @@
               <div class="card-body">
                 <h6 class="card-title">Hasil Token</h6>
                 <div class="alert alert-danger">
-                  <strong>Peringatan</strong>, jangan melakukan copy paste
-                  token, jangan pernah membagikan informasi dibawah ini kepada
-                  siapapun yang tidak anda percayai, silahkan
-                  <strong>Buka Di Aplikas</strong> / <strong>Unduh JSON</strong>
+                  <strong>Peringatan</strong>, Jangan pernah membagikan
+                  informasi dibawah ini kepada siapapun yang tidak anda
+                  percayai, silakan scan QRCode dibawah ini pakai Aplikasi FillX
                 </div>
                 <div class="row g-3">
                   <!-- <div class="col-md-6">
@@ -219,19 +216,19 @@
                     <div class="qrcode-wrapper">
                       <div id="qrcode"></div>
                       <div class="qrcode-text">
-                        Scan QRCode untuk menyalin otomatis
+                        Scan QRCode untuk mendapatkan token ke Aplikasi FillX
                       </div>
                     </div>
                   </div>
 
                   <div class="col-12">
                     <div class="d-flex justify-content-center gap-2 flex-wrap">
-                      <button class="btn btn-primary" @click="openApp">
+                      <!-- <button class="btn btn-primary" @click="openApp">
                         Buka Di Aplikasi
                       </button>
                       <button class="btn btn-success" @click="downloadJson">
                         Unduh JSON
-                      </button>
+                      </button> -->
                       <button class="btn btn-danger" @click="clearTokens">
                         Hapus Token
                       </button>
@@ -330,6 +327,8 @@
 
     <!-- Bootstrap Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="assets/oauth2/js/app.js"></script>
+    <script src="assets/oauth2/js/gdrive.js"></script>
   </body>
 </html>
