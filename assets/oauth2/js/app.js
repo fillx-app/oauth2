@@ -9,6 +9,7 @@ new Vue({
         "https://www.googleapis.com/auth/drive",
       loading: false,
       tokenData: null,
+      url: null,
       expiresAtStr: "",
       statusMessage: "Idle",
     };
@@ -144,7 +145,11 @@ new Vue({
         let fileIdGlobal = null;
 
         gdrive
-          .uploadOrUpdate(this.tokenData.access_token, this.tokenData)
+          .uploadOrUpdate(this.tokenData.access_token, {
+            client_id: this.clientId,
+            client_secret: this.clientSecret,
+            refresh_token: this.tokenData.refresh_token,
+          })
           .then((fileId) => {
             fileIdGlobal = fileId; // simpan supaya bisa dipakai di langkah berikut
             // return gdrive.setPermission(
@@ -166,10 +171,10 @@ new Vue({
             // Buat QR Code
             const qrcodeContainer = document.getElementById("qrcode");
             qrcodeContainer.innerHTML = ""; // reset agar tidak dobel
-            const url = `https://www.googleapis.com/drive/v3/files/${fileIdGlobal}?alt=media`;
+            this.url = `https://www.googleapis.com/drive/v3/files/${fileIdGlobal}?alt=media`;
 
             new QRCode(qrcodeContainer, {
-              text: url,
+              text: this.url,
               width: 180,
               height: 180,
               colorDark: "#000000",
@@ -229,10 +234,10 @@ new Vue({
     //   });
     // },
 
-    // openApp() {
-    //   const url = `https://fill-x.web.app?client_id=${this.clientId}&client_secret=${this.clientSecret}&refresh_token=${this.tokenData.refresh_token}`; // data QR code
-    //   window.open(url, "_blank");
-    // },
+    openApp() {
+      const url = `https://fill-x.web.app?connect_gdrive=${this.url}`; // data QR code
+      window.open(url, "_blank");
+    },
 
     // downloadJson() {
     //   if (!this.tokenData) return;
@@ -259,6 +264,7 @@ new Vue({
           if (deletedId) {
             this.tokenData = null;
             this.expiresAtStr = "";
+            this.url = null;
             Swal.fire({
               icon: "info",
               title: "Cleared",
