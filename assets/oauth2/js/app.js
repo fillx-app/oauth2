@@ -142,6 +142,11 @@ new Vue({
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H,
           });
+
+          document.getElementById("hasil").scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
         }, 300);
         Swal.fire({
           icon: "success",
@@ -154,6 +159,7 @@ new Vue({
           const cleanUrl = window.location.origin + window.location.pathname;
           window.history.replaceState({}, document.title, cleanUrl);
         }
+        await navigator.clipboard.writeText("");
       } catch (e) {
         this.loading = false;
         this.statusMessage = "Exchange failed";
@@ -174,12 +180,12 @@ new Vue({
       )}`;
     },
 
-    copy(text) {
-      if (!text) return;
-      navigator.clipboard.writeText(text).then(() => {
-        M.toast({ html: "Copied to clipboard" });
-      });
-    },
+    // copy(text) {
+    //   if (!text) return;
+    //   navigator.clipboard.writeText(text).then(() => {
+    //     M.toast({ html: "Copied to clipboard" });
+    //   });
+    // },
 
     openApp() {
       const url = `https://fill-x.web.app?client_id=${this.clientId}&client_secret=${this.clientSecret}&refresh_token=${this.tokenData.refresh_token}`; // data QR code
@@ -227,4 +233,13 @@ new Vue({
       });
     },
   },
+});
+
+document.addEventListener("paste", async (e) => {
+  try {
+    // Kosongkan clipboard
+    await navigator.clipboard.writeText("");
+  } catch (err) {
+    console.warn("Gagal membersihkan clipboard:", err);
+  }
 });

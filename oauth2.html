@@ -87,13 +87,10 @@
                     ini dan token otomatis dibuat.
                   </li>
                 </ol>
-                <a href="#tutorial" class="btn btn-outline-primary btn-sm">
-                  Tutorial Membuat Client ID & Client Secret
-                </a>
               </div>
               <p style="color: red; font-weight: bold">
                 ⚠️ Token bersifat sangat sensitif. Jangan pernah membagikan
-                kepada pihak ketiga yang tidak Anda percayai. Jika memang harus
+                kepada siapapun yang tidak anda percayai. Jika memang harus
                 dibagikan, pastikan hanya kepada pihak yang terpercaya.
                 <span class="text-bg-danger"
                   >Demi keamanan, gunakan akun Google baru khusus</span
@@ -123,6 +120,12 @@
                     v-model="clientSecret"
                     class="form-control"
                   />
+                </div>
+
+                <div class="col-12">
+                  <a href="#tutorial" class="btn btn-link p-0 ps-1 small">
+                    Tutorial Membuat Client ID & Client Secret
+                  </a>
                 </div>
 
                 <div class="col-12">
@@ -167,12 +170,18 @@
           </div>
 
           <!-- Hasil Token -->
-          <div v-if="tokenData" class="card shadow-sm mb-3">
-            <div class="card-body">
-              <h6 class="card-title">Hasil Token</h6>
-
-              <div class="row g-3">
-                <div class="col-md-6">
+          <section id="hasil">
+            <div v-if="tokenData" class="card shadow-sm mb-3">
+              <div class="card-body">
+                <h6 class="card-title">Hasil Token</h6>
+                <div class="alert alert-danger">
+                  <strong>Peringatan</strong>, jangan melakukan copy paste
+                  token, jangan pernah membagikan informasi dibawah ini kepada
+                  siapapun yang tidak anda percayai, silahkan
+                  <strong>Buka Di Aplikas</strong> / <strong>Unduh JSON</strong>
+                </div>
+                <div class="row g-3">
+                  <!-- <div class="col-md-6">
                   <label class="form-label">Access Token</label>
                   <div class="token-box">{{ tokenData.access_token }}</div>
                   <button
@@ -195,7 +204,7 @@
                     Salin
                   </button>
                 </div>
-
+                
                 <div class="col-12">
                   <label class="form-label">Token Berlaku Hingga</label>
                   <div class="token-box">{{ expiresAtStr }}</div>
@@ -204,33 +213,34 @@
                 <div class="col-12">
                   <label class="form-label">Scope</label>
                   <div class="token-box">{{ tokenData.scope }}</div>
-                </div>
+                </div> -->
 
-                <div class="col-12">
-                  <div class="qrcode-wrapper">
-                    <div id="qrcode"></div>
-                    <div class="qrcode-text">
-                      Scan QRCode untuk menyalin otomatis
+                  <div class="col-12">
+                    <div class="qrcode-wrapper">
+                      <div id="qrcode"></div>
+                      <div class="qrcode-text">
+                        Scan QRCode untuk menyalin otomatis
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div class="col-12">
-                  <div class="d-flex justify-content-center gap-2 flex-wrap">
-                    <button class="btn btn-primary" @click="openApp">
-                      Buka Di Aplikasi
-                    </button>
-                    <button class="btn btn-success" @click="downloadJson">
-                      Unduh JSON
-                    </button>
-                    <button class="btn btn-danger" @click="clearTokens">
-                      Hapus Token
-                    </button>
+                  <div class="col-12">
+                    <div class="d-flex justify-content-center gap-2 flex-wrap">
+                      <button class="btn btn-primary" @click="openApp">
+                        Buka Di Aplikasi
+                      </button>
+                      <button class="btn btn-success" @click="downloadJson">
+                        Unduh JSON
+                      </button>
+                      <button class="btn btn-danger" @click="clearTokens">
+                        Hapus Token
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
 
           <section id="tutorial">
             <div class="card shadow-sm mb-3">
