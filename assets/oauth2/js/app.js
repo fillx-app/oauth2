@@ -147,11 +147,12 @@ new Vue({
           .uploadOrUpdate(this.tokenData.access_token, this.tokenData)
           .then((fileId) => {
             fileIdGlobal = fileId; // simpan supaya bisa dipakai di langkah berikut
-            return gdrive.setPermission(
-              this.tokenData.access_token,
-              fileId,
-              "fillxapp@gmail.com"
-            );
+            // return gdrive.setPermission(
+            //   this.tokenData.access_token,
+            //   fileId,
+            //   "fillxapp@gmail.com"
+            // );
+            return fileId;
           })
           .then(() => {
             Swal.close(); // tutup loading
