@@ -9,6 +9,7 @@ new Vue({
         "https://www.googleapis.com/auth/drive",
       loading: false,
       tokenData: null,
+      email: null,
       url: null,
       expiresAtStr: "",
       statusMessage: "Idle",
@@ -102,6 +103,16 @@ new Vue({
         });
 
         const data = await res.json();
+
+        const info = await fetch(
+          "https://www.googleapis.com/drive/v3/about?fields=user",
+          {
+            headers: {
+              Authorization: `Bearer ${data.access_token}`,
+            },
+          }
+        );
+        const profile = await info.json();
         this.loading = false;
 
         if (!res.ok || data.error) {
@@ -114,8 +125,8 @@ new Vue({
           });
           return;
         }
-
         this.tokenData = data;
+        this.email = profile.user.emailAddress;
         const expiresIn = data.expires_in || 0;
         const expiresAt = new Date(Date.now() + expiresIn * 1000);
         this.expiresAtStr = this.formatDate(expiresAt);
@@ -149,14 +160,10 @@ new Vue({
             client_id: this.clientId,
             client_secret: this.clientSecret,
             refresh_token: this.tokenData.refresh_token,
+            email: this.email,
           })
           .then((fileId) => {
-            fileIdGlobal = fileId; // simpan supaya bisa dipakai di langkah berikut
-            // return gdrive.setPermission(
-            //   this.tokenData.access_token,
-            //   fileId,
-            //   "fillxapp@gmail.com"
-            // );
+            fileIdGlobal = fileId;
             return fileId;
           })
           .then(() => {
@@ -264,6 +271,7 @@ new Vue({
           if (deletedId) {
             this.tokenData = null;
             this.expiresAtStr = "";
+            this.email = null;
             this.url = null;
             Swal.fire({
               icon: "info",
