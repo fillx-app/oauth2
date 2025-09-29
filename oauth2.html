@@ -241,83 +241,106 @@
 
           <section id="tutorial">
             <div class="card shadow-sm mb-3">
-              <div class="card-body">
-                <h5 class="card-title">
-                  📖 Tutorial Membuat OAuth2 Client untuk Google Drive
+              <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                  Panduan Setup Google Drive API untuk Penyimpanan FillX
                 </h5>
-                <p class="small-note">
-                  Ikuti langkah-langkah berikut agar bisa mendapatkan
-                  <strong>Client ID</strong> dan
-                  <strong>Client Secret</strong> dari Google Console:
-                </p>
-
-                <ol class="mt-3">
+              </div>
+              <div class="card-body">
+                <ol class="mb-3">
                   <li>
-                    <strong>Login dengan Akun Google</strong>
-                    Masuk ke akun Google yang ingin digunakan untuk mengakses
-                    Google Cloud Console.
-                  </li>
-                  <li>
-                    <strong>Buka Google Cloud Console</strong>
-                    Akses:
+                    Kunjungi
                     <a href="https://console.cloud.google.com/" target="_blank"
-                      >https://console.cloud.google.com/</a
-                    >
+                      >Google Cloud Console</a
+                    >.
                   </li>
                   <li>
-                    <strong>Buat Project Baru</strong>
-                    Klik menu <em>"Select a Project"</em> →
-                    <em>"New Project"</em>. Beri nama project (misalnya:
-                    <em>Drive Token Generator</em>), lalu klik <em>Create</em>.
+                    Buat <strong>project baru</strong> dan beri nama
+                    <em>"Penyimpanan FillX"</em>.
+                  </li>
+                  <li>Pilih project yang sudah dibuat.</li>
+                  <li>
+                    Aktifkan layanan Google Drive API:
+                    <ul>
+                      <li>Buka menu <strong>API & Services</strong>.</li>
+                      <li>
+                        Cari <em>Google Drive API</em>, lalu klik
+                        <strong>Enable</strong>.
+                      </li>
+                    </ul>
                   </li>
                   <li>
-                    <strong>Pilih Project</strong>
-                    Pastikan project baru yang dibuat sudah aktif di bagian atas
-                    halaman.
+                    Atur <strong>OAuth Consent Screen</strong>:
+                    <ul>
+                      <li>App name: <em>Penyimpanan FillX</em></li>
+                      <li>Audience: <em>External</em></li>
+                      <li>Contact Information: masukkan email Anda</li>
+                      <li>
+                        Klik <strong>Finish</strong> → <strong>Agree</strong> →
+                        <strong>Create</strong>
+                      </li>
+                    </ul>
                   </li>
                   <li>
-                    <strong>Lengkapi Project Information (jika diminta)</strong>
-                    Jika muncul form <em>Project Information</em>, isi sesuai
-                    kebutuhan, lalu simpan.
+                    Buat <strong>Credentials → OAuth Client ID</strong>:
+                    <ul>
+                      <li>Application Type: <em>Web Application</em></li>
+                      <li>Name: <em>Penyimpanan FillX</em></li>
+                      <li>
+                        Authorized JavaScript Origins: <em>(kosongkan)</em>
+                      </li>
+                      <li>
+                        Authorized Redirect URIs:
+                        <code
+                          >https://fillx-app.github.io/oauth2/oauth2.html</code
+                        >
+                      </li>
+                      <li>Klik <strong>Create</strong></li>
+                    </ul>
                   </li>
                   <li>
-                    <strong>Aktifkan Google Drive API</strong>
-                    Masuk ke menu <em>"API & Services" → "Library"</em>. Cari
-                    <em>Google Drive API</em>, lalu klik <em>Enable</em>.
+                    Simpan hasil pembuatan OAuth Client:
+                    <ul>
+                      <li>
+                        Catat <strong>Client ID</strong> dan
+                        <strong>Client Secret</strong>.
+                      </li>
+                      <li>
+                        Client Secret hanya terlihat sekali, jadi salin dan
+                        simpan aman untuk digunakan pada Google Drive For FillX.
+                      </li>
+                    </ul>
                   </li>
                   <li>
-                    <strong>Konfigurasi OAuth Consent Screen</strong>
-                    - Buka menu
-                    <em>"API & Services" → "OAuth consent screen"</em> - Pilih
-                    <em>External</em> agar bisa dipakai semua akun Google - Isi
-                    nama aplikasi (misalnya: <em>Drive Token Generator</em>),
-                    email support, dan domain (jika ada) - Tambahkan scope
-                    <code>https://www.googleapis.com/auth/drive</code> - Simpan
-                    dan <em>Publish</em> consent screen
+                    Tentukan <strong>Audience</strong>:
+                    <ul>
+                      <li>
+                        Buka menu <em>Consent Screen</em> → pilih
+                        <strong>Audience</strong>.
+                      </li>
+                    </ul>
                   </li>
                   <li>
-                    <strong>Buat Credential OAuth Client ID</strong>
-                    - Buka menu <em>"API & Services" → "Credentials"</em> - Klik
-                    <em>"Create Credentials" → "OAuth Client ID"</em> - Pilih
-                    <em>Web Application</em> - Masukkan nama (contoh:
-                    <em>Web OAuth2 Client</em>) - Pada
-                    <em>Authorized redirect URIs</em>, tambahkan: <br /><code
-                      >https://fillx-app.github.io/oauth2/oauth2.html</code
-                    >
-                  </li>
-                  <li>
-                    <strong>Simpan & Catat Credential</strong>
-                    Setelah dibuat, Google akan menampilkan
-                    <em>Client ID</em> dan <em>Client Secret</em>. Unduh file
-                    JSON untuk backup dan simpan dengan aman.
-                  </li>
-                  <li>
-                    <strong>Selesai!</strong>
-                    Sekarang Anda sudah siap menggunakan <em>Client ID</em> dan
-                    <em>Client Secret</em> untuk menghasilkan Access Token dan
-                    Refresh Token.
+                    Tambah <strong>Test Users</strong>:
+                    <ul>
+                      <li>
+                        Masukkan email pemilik project agar akses terbatas dan
+                        aman.
+                      </li>
+                      <li>
+                        <strong>JANGAN publish app</strong> agar tidak terbuka
+                        untuk umum.
+                      </li>
+                    </ul>
                   </li>
                 </ol>
+
+                <div class="alert alert-warning mt-3 mb-0">
+                  <strong>Catatan Penting:</strong> Pastikan hanya email pemilik
+                  project yang dimasukkan sebagai Test User. Jangan pernah
+                  mempublikasikan aplikasi ini agar tidak bisa diakses pihak
+                  lain.
+                </div>
               </div>
             </div>
           </section>
