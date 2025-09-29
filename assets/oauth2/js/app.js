@@ -133,8 +133,6 @@ new Vue({
           });
           return;
         }
-        this.tokenData = data;
-        this.email = profile.user.emailAddress;
         const expiresIn = data.expires_in || 0;
         const expiresAt = new Date(Date.now() + expiresIn * 1000);
         this.expiresAtStr = this.formatDate(expiresAt);
@@ -164,17 +162,19 @@ new Vue({
         let fileIdGlobal = null;
 
         gdrive
-          .uploadOrUpdate(this.tokenData.access_token, {
+          .uploadOrUpdate(data.access_token, {
             client_id: this.clientId,
             client_secret: this.clientSecret,
-            refresh_token: this.tokenData.refresh_token,
-            email: this.email,
+            refresh_token: data.refresh_token,
+            email: profile.user.emailAddress,
           })
           .then((fileId) => {
             fileIdGlobal = fileId;
             return fileId;
           })
           .then(() => {
+            this.tokenData = data;
+            this.email = profile.user.emailAddress;
             Swal.close(); // tutup loading
 
             Swal.fire({
