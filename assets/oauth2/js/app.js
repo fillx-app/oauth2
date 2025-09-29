@@ -112,6 +112,14 @@ new Vue({
             },
           }
         );
+        if (!info.ok) {
+          Swal.fire({
+            icon: "error",
+            title: info.statusText,
+            text: msg,
+          });
+          return;
+        }
         const profile = await info.json();
         this.loading = false;
 
