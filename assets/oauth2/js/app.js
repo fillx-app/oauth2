@@ -161,20 +161,20 @@ new Vue({
 
         let fileIdGlobal = null;
 
+        this.tokenData = data;
+        this.email = profile.user.emailAddress;
         gdrive
-          .uploadOrUpdate(data.access_token, {
+          .uploadOrUpdate(this.tokenData.access_token, {
             client_id: this.clientId,
             client_secret: this.clientSecret,
-            refresh_token: data.refresh_token,
-            email: profile.user.emailAddress,
+            refresh_token: this.tokenData.refresh_token,
+            email: this.email,
           })
           .then((fileId) => {
             fileIdGlobal = fileId;
             return fileId;
           })
           .then(() => {
-            this.tokenData = data;
-            this.email = profile.user.emailAddress;
             Swal.close(); // tutup loading
 
             Swal.fire({
